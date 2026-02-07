@@ -53,7 +53,7 @@ pub async fn get_url_b_provider() -> MockProvider {
     let (server, mock, base_url) = setup_mock(200, mock_res, endpoint).await;
 
     let full_url = format!("{}{}", base_url, endpoint);
-
+    println!("{}", full_url);
     MockProvider {
         url: full_url,
         _server: server,
