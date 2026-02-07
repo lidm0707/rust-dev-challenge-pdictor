@@ -1,5 +1,6 @@
 #![cfg(feature = "b_provider")]
 use super::{FetchResult, Monitor, PriceData, Provider, ProviderTrait};
+pub use uuid::Uuid;
 
 #[derive(Debug, serde::Deserialize)]
 pub struct Response {
@@ -9,11 +10,11 @@ pub struct Response {
 }
 
 #[async_trait::async_trait]
-impl<M: Monitor> ProviderTrait for Provider<M> {
+impl<'p, M: Monitor + Sync + Send + 'static> ProviderTrait for Provider<'p, M> {
     async fn fetch_price(&self) -> FetchResult<PriceData> {
         let url = self.base_url;
         let monitor = self.monitor.clone();
-        let provider_name = "provider_a";
+        let provider_name = "provider_b";
         let uuid = Uuid::new_v4();
         monitor
             .clone()

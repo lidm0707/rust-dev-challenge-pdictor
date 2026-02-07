@@ -28,7 +28,7 @@ pub async fn get_url_a_provider() -> MockProvider {
         "name": "Bitcoin",
         "price": 1000000,
         "date": "2023-01-01"
-        }"#;
+    }"#;
 
     let endpoint = "/api/a_provider";
     let (server, mock, base_url) = setup_mock(200, mock_res, endpoint).await;
@@ -46,8 +46,8 @@ pub async fn get_url_b_provider() -> MockProvider {
     let mock_res = r#"{
         "symbol": "ETH",
         "description": "Ethereum",
-        "price": 50000,
-        }"#;
+        "price": 50000
+    }"#;
 
     let endpoint = "/api/b_provider";
     let (server, mock, base_url) = setup_mock(200, mock_res, endpoint).await;

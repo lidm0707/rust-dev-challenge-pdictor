@@ -13,7 +13,7 @@ async-trait = "0.1"
 thiserror = "1.0"
 uuid = { version = "1.2", features = ["v4"] }
 [features]
-default = ["a_provider"]
+default = ["b_provider"]
 a_provider = []
 b_provider = []
 monitoring = []
