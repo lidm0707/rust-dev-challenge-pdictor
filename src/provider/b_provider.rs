@@ -9,17 +9,23 @@ pub struct Response {
 }
 
 #[async_trait::async_trait]
-impl<M: Monitor + Sync + Send + 'static> ProviderTrait for Provider<M> {
+impl<M: Monitor> ProviderTrait for Provider<M> {
     async fn fetch_price(&self) -> FetchResult<PriceData> {
         let url = self.base_url;
         let monitor = self.monitor.clone();
-        tokio::spawn(async move {
-            monitor.clone().on_start().await;
-        });
+        let provider_name = "provider_a";
+        let uuid = Uuid::new_v4();
+        monitor
+            .clone()
+            .on_start(provider_name, uuid.as_bytes())
+            .await;
+
         let response = self.client.get(url).send().await?;
-        self.monitor.log(response.status().as_str()).await;
+        self.monitor
+            .log(provider_name, uuid.as_bytes(), response.status().as_str())
+            .await;
         let data: Response = response.json().await?;
-        self.monitor.on_finish().await;
+        self.monitor.on_finish(provider_name, uuid.as_bytes()).await;
 
         Ok(PriceData {
             symbol: data.symbol,
