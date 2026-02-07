@@ -13,13 +13,9 @@ pub struct Response {
 impl<'p, M: Monitor + Sync + Send + 'static> ProviderTrait for Provider<'p, M> {
     async fn fetch_price(&self) -> FetchResult<PriceData> {
         let url = self.base_url;
-        let monitor = self.monitor.clone();
-        let provider_name = "provider_b";
+        let provider_name = self.provider_name;
         let uuid = Uuid::new_v4();
-        monitor
-            .clone()
-            .on_start(provider_name, uuid.as_bytes())
-            .await;
+        self.monitor.on_start(provider_name, uuid.as_bytes()).await;
 
         let response = self.client.get(url).send().await?;
         self.monitor
