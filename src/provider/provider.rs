@@ -5,11 +5,11 @@ use super::Monitor;
 pub struct Provider<'p, M: Monitor + Sync + Send> {
     pub base_url: &'p str,
     pub client: reqwest::Client,
-    pub monitor: Arc<M>,
+    pub monitor: Arc<&'p M>,
     pub provider_name: &'p str,
 }
 impl<'p, M: Monitor + Sync + Send> Provider<'p, M> {
-    pub fn new(base_url: &'p str, monitor: M) -> Self {
+    pub fn new(base_url: &'p str, monitor: &'p M) -> Self {
         Self {
             base_url: base_url,
             client: reqwest::Client::new(),

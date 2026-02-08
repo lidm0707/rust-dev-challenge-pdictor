@@ -1,6 +1,5 @@
 #[async_trait::async_trait]
 pub trait Monitor {
-    async fn on_start(&self, provuder: &str, uuid: &[u8]);
-    async fn on_finish(&self, provuder: &str, uuid: &[u8]);
-    async fn log(&self, provuder: &str, uuid: &[u8], message: &str);
+    async fn on_start(&self, symbol: &str);
+    async fn on_finish(&self, symbol: &str, success: bool);
 }

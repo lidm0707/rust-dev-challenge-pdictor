@@ -12,24 +12,14 @@ impl MockMonitor {
 
 #[async_trait::async_trait]
 impl Monitor for MockMonitor {
-    async fn on_start(&self, provuder: &str, uuid: &[u8]) {
-        println!(
-            "MockMonitor::on_start should not be called {} {:?}",
-            provuder, uuid
-        );
+    async fn on_start(&self, symbol: &str) {
+        println!("MockMonitor::on_start should not be called {}", symbol);
     }
 
-    async fn on_finish(&self, provuder: &str, uuid: &[u8]) {
+    async fn on_finish(&self, symbol: &str, success: bool) {
         println!(
-            "MockMonitor::on_finish should not be called {} {:?}",
-            provuder, uuid
-        );
-    }
-
-    async fn log(&self, provuder: &str, uuid: &[u8], message: &str) {
-        println!(
-            "MockMonitor::log should not be called {} {:?} {}",
-            provuder, uuid, message
+            "MockMonitor::on_finish should not be called {} is success {}",
+            symbol, success
         );
     }
 }
@@ -71,14 +61,14 @@ fn test_price_data_without_optional_fields() {
 #[test]
 fn test_config_creation() {
     let monitor = MockMonitor::new();
-    let config = Config::new("http://example.com", monitor);
+    let config = Config::new("http://example.com", &monitor);
     assert_eq!(config.base_url, "http://example.com");
 }
 
 #[test]
 fn test_config_build_provider() {
     let monitor = MockMonitor::new();
-    let config = Config::new("http://example.com", monitor);
+    let config = Config::new("http://example.com", &monitor);
     let provider = config.build();
     assert_eq!(provider.base_url, "http://example.com");
 }
@@ -89,7 +79,7 @@ async fn test_a_provider_fetch() {
     let server = get_url_a_provider().await;
     let monitor = MockMonitor::new();
     let url = server.url;
-    let config = Config::new(&url, monitor);
+    let config = Config::new(&url, &monitor);
     let provider = config.build();
     let result = provider.fetch_price().await;
 
@@ -104,7 +94,7 @@ async fn test_a_provider_fetch() {
 async fn test_b_provider_fetch() {
     let server = get_url_b_provider().await;
     let monitor = MockMonitor::new();
-    let config = Config::new(&server.url, monitor);
+    let config = Config::new(&server.url, &monitor);
     let provider = config.build();
     let result = provider.fetch_price().await;
 
